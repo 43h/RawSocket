@@ -186,9 +186,9 @@ int main(int argc, char const *argv[])
     tcp->dest = htons(dst_port);
     tcp->seq = 0x1111;
     tcp->ack_seq = 0;
-    tcp->syn = 1;
-    //tcp->rst = 1;
-    // tcp->ack = 1;
+    //tcp->syn = 1;
+    tcp->rst = 1;
+    tcp->ack = 1;
     tcp->doff = 5;
     tcp->window = 0;
 
