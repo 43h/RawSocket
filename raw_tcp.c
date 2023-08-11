@@ -184,7 +184,7 @@ int main(int argc, char const *argv[])
     tcp->source = htons(src_port);
     // destination port number
     tcp->dest = htons(dst_port);
-    tcp->seq = 0x1111;
+    tcp->seq = htonl(0x1111);
     tcp->ack_seq = 0x2222;
     tcp->syn = 1;
     //tcp->rst = 1;
@@ -210,12 +210,31 @@ int main(int argc, char const *argv[])
     int32_t len = sendto(sd, (void *)data, pkt_len, 0, (const struct sockaddr *)&sockaddr, sizeof(sockaddr));
     if (len > 0)
     {
-        printf("send data, len %d\n", len);
+        printf("send syn, len %d\n", len);
     }
     else
     {
-        printf("fail to send data, %s\n", strerror(errno));
+        printf("fail to send syn, %s\n", strerror(errno));
     }
+
+    //发完SYN,发送RST-ACK
+    tcp->seq = htonl(0x1112);
+    tcp->syn = 0;
+    tcp->rst = 1;
+    tcp->ack = 1;
+    compute_tcp_checksum(ip, (unsigned short *)tcp);
+    // calculate the checksum for integrity
+    compute_ip_checksum(ip);
+    len = sendto(sd, (void *)data, pkt_len, 0, (const struct sockaddr *)&sockaddr, sizeof(sockaddr));
+    if (len > 0)
+    {
+        printf("send rst-ack, len %d\n", len);
+    }
+    else
+    {
+        printf("fail to rst-ack data, %s\n", strerror(errno));
+    }
+
 err:
     close(sd);
     return 0;
