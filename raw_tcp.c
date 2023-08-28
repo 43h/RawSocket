@@ -216,7 +216,7 @@ int main(int argc, char const *argv[])
     {
         printf("fail to send syn, %s\n", strerror(errno));
     }
-
+    #if 0
     //发完SYN,发送RST-ACK
     tcp->seq = htonl(0x1112);
     tcp->syn = 0;
@@ -234,7 +234,7 @@ int main(int argc, char const *argv[])
     {
         printf("fail to rst-ack data, %s\n", strerror(errno));
     }
-
+    #endif
 err:
     close(sd);
     return 0;
